@@ -1,0 +1,4 @@
+(executable
+ (public_name nbe_stlc)
+ (name main)
+ (libraries nbe_stlc))
