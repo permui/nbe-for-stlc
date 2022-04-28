@@ -1,2 +1,12 @@
+(menhir
+ (modules parser))
+
+(ocamllex lexer)
+
 (library
- (name nbe_stlc))
+ (name mylib)
+ (modules parser lexer tmp 
+          concrete_syntax serialize syntax
+          driver domain utils nbe)
+ (libraries sexplib)
+ (public_name nbe_stlc))

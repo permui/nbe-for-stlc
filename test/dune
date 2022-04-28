@@ -1,2 +1,3 @@
 (test
- (name nbe_stlc))
+ (name nbe_stlc)
+ (libraries mylib sexplib))
