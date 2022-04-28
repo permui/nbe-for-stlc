@@ -7,7 +7,7 @@ let print_pos outx lexbuf =
     pos.pos_fname pos.pos_lnum (pos.pos_cnum - pos.pos_bol + 1)
 
 let test_front =
-  let inx = open_in "test/test.st" in
+  let inx = open_in "test/test.stlc" in
   let lexbuf = Lexing.from_channel inx in
   try 
     let coms = Mylib.Parser.prog Mylib.Lexer.read lexbuf in
