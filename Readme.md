@@ -28,7 +28,7 @@ The author's system environment is
 
 The code should build and run in similar environment, but the author hasn't tested it.
 
-To build the code, first clone the repository. Then go to the `nbe-for-stlc` directory. Install the dependencies and build.
+To build the code, first clone the repository. Then go to the `nbe-for-stlc` directory. Install the dependencies and build with the following commands.
 
 ``` bash
 opam install --deps-only .
@@ -42,7 +42,7 @@ dune exec stlc
 ```
 
 Currently, the input file is `test/test.st` and its path is hard-coded in `main.ml`. This behavior will (of course) be replaced by
-better command line interface. 
+better command line interface in the future. 
 
 ## Notes
 
