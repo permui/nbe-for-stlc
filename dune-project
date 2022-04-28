@@ -8,11 +8,12 @@
  (github permui/nbe-for-stlc))
 
 (authors "Aoyang Yu")
+(maintainers "Aoyang Yu")
 
 (package
  (name nbe_stlc)
- (synopsis "Practise Normalization by Evaluation on STLC.")
- (depends ocaml dune)
+ (synopsis "Practise Normalization by Evaluation on STLC")
+ (depends ocaml dune sexplib)
  (tags
   ("NbE" "STLC" "Type Theory")))
 
