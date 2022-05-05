@@ -52,5 +52,7 @@ let rec run_with_env coms env =
 
 let run coms = 
   try run_with_env coms empty_env with
-  | S.Error s -> Printf.printf "S.Error: %s\n" s
-  | DriverError s -> Printf.printf "DriverError: %s\n" s
+  | S.Error s -> Printf.printf "Abstract Syntax Error: %s\n" s
+  | DriverError s -> Printf.printf "Driver Error: %s\n" s
+  | Check.TypeError s -> Printf.printf "Type Error: %s\n" s
+  | Nbe.NbeError s -> Printf.printf "Nbe Error: %s\n" s

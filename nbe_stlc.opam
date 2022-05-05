@@ -10,6 +10,7 @@ depends: [
   "ocaml"
   "dune" {>= "3.0"}
   "sexplib"
+  "cmdliner" {= "1.1.0"}
   "odoc" {with-doc}
 ]
 build: [

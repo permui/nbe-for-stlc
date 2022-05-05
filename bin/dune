@@ -2,4 +2,4 @@
  (public_name stlc)
  (modes byte exe)
  (name main)
- (libraries nbe_stlc))
+ (libraries nbe_stlc cmdliner))

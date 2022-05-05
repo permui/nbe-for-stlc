@@ -8,6 +8,7 @@ Terms of our language include
 * Variable: `x`
 * Lambda Abstraction: `fun x -> ...`
 * Function application: `f x`
+* Annotation: `x :: t`
 
 Types of our language include
 
@@ -20,7 +21,19 @@ Commands of our language include
 * Definition: `def x : A = b`, where `x` is an identifier, `A` and `b` are terms.
 * Normalization: `normalize name`, where `name` is some identifier defined by `def`.
 
-See `test/test.st` for some examples.
+See the `example` directory for program examples. Here is one:
+
+```
+basetype A
+basetype B
+
+def app_id : A -> B = ((fun x -> x) :: (A -> B) -> (A -> B)) (fun y -> y)
+
+def func_id : (A -> A) -> (A -> A) = fun x -> x
+
+normalize app_id
+normalize func_id
+```
 
 ## How to build
 
@@ -42,12 +55,5 @@ dune build
 ## How to run
 
 ``` bash
-dune exec stlc
+dune exec stlc <filename>
 ```
-
-Currently, the input file is `test/test.st` and its path is hard-coded in `main.ml`. This behavior will (of course) be replaced by
-better command line interface in the future. 
-
-## Notes
-
-The code has not been fully tested, but it will be.

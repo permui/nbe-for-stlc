@@ -1,5 +1,0 @@
-basetype A
-
-def tmp : A -> A = ((fun x -> x) :: (A -> A) -> (A -> A)) (fun y -> y)
-
-normalize tmp

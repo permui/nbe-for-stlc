@@ -10,6 +10,12 @@ def ap : (T -> T) -> T -> T = fun f -> fun x -> f x
 
 def func_id : (T -> T) -> (T -> T) = fun f -> f
 
+normalize id
+normalize fst
+normalize snd
+normalize ap
+normalize func_id
+
 basetype A
 basetype B
 
@@ -19,11 +25,6 @@ def f : (((A -> B) -> A -> B) -> ((A -> B) -> A -> B)) -> ((A -> B) -> A -> B) =
 
 def tmp : ((A -> B) -> A -> B) = f id1
 
-normalize id
-normalize fst
-normalize snd
-normalize ap
-normalize func_id
 normalize id1
 normalize f
 normalize tmp
