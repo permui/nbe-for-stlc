@@ -22,7 +22,7 @@ let work com (Env { len; bases; names; terms; tps }) =
       else Env { len; bases = s :: bases; names; terms; tps }
   | CS.Def (name, tp, term) ->
     let tp = S.remove_names_ty tp bases in
-    let term = S.remove_names_t term names in
+    let term = S.remove_names_t term names bases in
     let sem_tp = Nbe.eval_ty tp in
     Check.check term sem_tp tps;
     let sem_term = Nbe.eval_t term terms in
@@ -36,7 +36,7 @@ let work com (Env { len; bases; names; terms; tps }) =
         let tp = List.nth tps k in
         let nf = Nbe.read_back 0 (Pack { term; tp }) in
         Printf.printf "normalize %s =\n  " name;
-        let (_, cnf) = S.to_concrete_syntax nf in 
+        let (_, cnf) = S.t_to_concrete_syntax nf in 
         CS.print_t cnf
     end;
     Env { len; bases; names; terms; tps }

@@ -1,4 +1,5 @@
 type t =
+  | Annot of t * ty
   | TermIdent of string
   | Lam of binding
   | Ap of { f: t; a: t }
@@ -11,6 +12,7 @@ type com =
   | Basetype of string
   | Def of string * ty * t
   | Normalize of string
+  
 val cst_to_sexp: t -> Sexplib.Sexp.t
 
 val cscom_to_sexp: com -> Sexplib.Sexp.t

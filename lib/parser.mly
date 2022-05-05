@@ -10,6 +10,7 @@ open Concrete_syntax
 %token RPAR
 %token COLON
 %token FUN
+%token ANNOT
 %token EQ
 %token DEF
 %token BASETYPE
@@ -57,6 +58,13 @@ tm_e2:
   ;
 
 tm_e3:
+  | t = tm_e4; ANNOT; ty = ty_e
+    { Annot (t, ty) }
+  | t = tm_e4
+    { t }
+  ;
+
+tm_e4:
   | s = ID
     { TermIdent s }
   | LPAR; c = tm_e; RPAR

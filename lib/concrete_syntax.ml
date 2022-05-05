@@ -2,6 +2,7 @@ open Sexplib
 
 (* Det (x, A, b) === let x : A = b *)
 type t =
+  | Annot of t * ty
   | TermIdent of string
   | Lam of binding
   | Ap of { f: t; a: t }
@@ -19,6 +20,11 @@ type com =
 
 let rec cst_to_sexp t = 
   match t with
+  | Annot (t, ty) -> Sexp.(List [
+      Atom "Annot";
+      cst_to_sexp t;
+      csty_to_sexp ty
+    ])
   | TermIdent s -> Sexp.Atom s
   | Lam (Binding { names; body }) -> 
     let names = Conv.sexp_of_list Conv.sexp_of_string names in
@@ -33,7 +39,7 @@ let rec cst_to_sexp t =
       cst_to_sexp a
     ])
 
-let csty_to_sexp ty = 
+and csty_to_sexp ty = 
   let rec csty_to_string ty = 
     match ty with
     | TypeIdent s -> s
@@ -61,4 +67,4 @@ let cscom_to_sexp com =
       Atom s
     ])
 
-let print_t t = t |> cst_to_sexp |> Sexp.to_string_hum |> print_endline
+let print_t t = t |> cst_to_sexp |> Sexp.to_string_hum ~indent:2 |> print_endline

@@ -22,6 +22,7 @@ rule read =
   | "basetype" { BASETYPE }
   | "def" { DEF }
   | "normalize" { NORMALIZE }
+  | "::" { ANNOT }
   | '=' { EQ }
   | id { ID (Lexing.lexeme lexbuf) }
   | _ { raise (SyntaxError ("unexpected char " ^ Lexing.lexeme lexbuf)) }

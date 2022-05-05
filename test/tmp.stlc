@@ -9,3 +9,21 @@ def snd: T -> T -> T = fun x -> fun y -> y
 def ap : (T -> T) -> T -> T = fun f -> fun x -> f x
 
 def func_id : (T -> T) -> (T -> T) = fun f -> f
+
+basetype A
+basetype B
+
+def id1 : ((A -> B) -> A -> B) -> ((A -> B) -> A -> B) = fun x -> x
+
+def f : (((A -> B) -> A -> B) -> ((A -> B) -> A -> B)) -> ((A -> B) -> A -> B) = (fun x -> x (fun y -> fun z -> y z))
+
+def tmp : ((A -> B) -> A -> B) = f id1
+
+normalize id
+normalize fst
+normalize snd
+normalize ap
+normalize func_id
+normalize id1
+normalize f
+normalize tmp

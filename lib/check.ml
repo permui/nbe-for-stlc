@@ -20,6 +20,12 @@ let rec check term sem_ty tps =
 
 and synth term tps = 
   match term with
+  | S.Annot (tm, ty) -> 
+    let ty' = Nbe.eval_ty ty in
+    begin
+      try check tm ty' tps; Some ty' with
+      | TypeError _ -> None
+    end
   | S.Var k -> Some (List.nth tps k)
   | S.Ap { f; a } ->
     let st = synth f tps in

@@ -14,6 +14,7 @@ and do_ap f a =
 
 and eval_t t env = 
   match t with
+  | S.Annot (tm, _ty) -> eval_t tm env
   | S.Var k -> List.nth env k
   | S.Lam t ->
     D.Lam (Clos { term = t; env = env })
