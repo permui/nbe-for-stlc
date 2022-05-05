@@ -2,4 +2,4 @@
 .PHONY: debug
 
 debug:
-	ocamldebug _build/default/bin/main.bc
+	ocamldebug -I ./_build/install/default/lib/nbe_stlc _build/default/bin/main.bc

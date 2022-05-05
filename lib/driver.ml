@@ -1,15 +1,9 @@
+open Utils
 module CS = Concrete_syntax
 module S  = Syntax
 module D  = Domain
 
 type env = Env of { len: int; names: string list; terms: D.t list; tps: D.t list }
-
-let rec get_index_ l x k =
-  match l with
-  | [] -> None
-  | y :: t -> if x = y then Some k else get_index_ t x (k + 1)
-
-let get_index l x = get_index_ l x 0
 
 (* we ignore typecheck for now *)
 let work com (Env { len; names; terms; tps }) =
@@ -29,7 +23,8 @@ let work com (Env { len; names; terms; tps }) =
         let tp = List.nth tps k in
         let nf = Nbe.read_back 0 (Pack { term; tp }) in
         Printf.printf "normalize %s =\n  " name;
-        S.print_syntax_t nf
+        let (_, cnf) = S.to_concrete_syntax nf in 
+        CS.print_t cnf
     end;
     Env { len; names; terms; tps }
 

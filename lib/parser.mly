@@ -41,16 +41,16 @@ e:
 
 e1:
   | FUN; x = ID; ARROW; b = e1
-    { Lam { names = [x]; body = b } }
+    { Lam (Binding { names = [x]; body = b }) }
   | c = e2
     { c }
   ;
 
 e2:
   | a = e3; ARROW; b = e2
-    { Pi { src = a; dst = { names = [""]; body = b } } }
+    { Pi { src = a; dst = Binding { names = [""]; body = b } } }
   | LPAR; x = ID; COLON; a = e; RPAR; ARROW; b = e2
-    { Pi { src = a; dst = { names = [x]; body = b } } }
+    { Pi { src = a; dst = Binding { names = [x]; body = b } } }
   | c = e3
     { c }
   ;
