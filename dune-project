@@ -13,7 +13,7 @@
 (package
  (name nbe_stlc)
  (synopsis "Practise Normalization by Evaluation on STLC")
- (depends ocaml dune sexplib (cmdliner (= 1.1.0)))
+ (depends ocaml dune (sexplib (= 0.15.0)) (cmdliner (= 1.1.0)))
  (tags
   ("NbE" "STLC" "Type Theory")))
 

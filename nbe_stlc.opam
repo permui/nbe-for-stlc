@@ -9,7 +9,7 @@ bug-reports: "https://github.com/permui/nbe-for-stlc/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.0"}
-  "sexplib"
+  "sexplib" {= "0.15.0"}
   "cmdliner" {= "1.1.0"}
   "odoc" {with-doc}
 ]

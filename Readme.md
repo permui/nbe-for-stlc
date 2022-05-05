@@ -42,6 +42,7 @@ The author's system environment is
 * OCaml 4.13.1
 * Dune 3.0.3
 * sexplib 0.15.0
+* Cmdliner 1.1.0
 
 The code should build and run in similar environment, but the author hasn't tested it.
 
