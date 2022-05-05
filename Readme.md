@@ -6,13 +6,17 @@ It computes the beta-reduced-eta-long normal form of typed lambda expressions.
 Terms of our language include 
 
 * Variable: `x`
-* Base type: `T` (literally, which means there is only one base type, `T`)
-* Non-dependent function type: `A -> B`
-* Dependent function type: `(x: A) -> B`
+* Lambda Abstraction: `fun x -> ...`
 * Function application: `f x`
+
+Types of our language include
+
+* User specified base types, like `A`, `B`, etc.
+* Function (Arrow) type: `A -> B`
 
 Commands of our language include
 
+* Base type: `basetype A`
 * Definition: `def x : A = b`, where `x` is an identifier, `A` and `b` are terms.
 * Normalization: `normalize name`, where `name` is some identifier defined by `def`.
 
