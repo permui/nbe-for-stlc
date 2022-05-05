@@ -1,11 +1,12 @@
-def id : T -> T = fun x -> x
+basetype A
+basetype B
 
-def fst: T -> T -> T = fun x -> fun y -> x
+def id : A -> A = fun x -> x
 
-def snd: T -> T -> T = fun x -> fun y -> y
+def id1 : ((A -> B) -> A -> B) -> ((A -> B) -> A -> B) = fun x -> x
 
-def ap : (T -> T) -> T -> T = fun f -> fun x -> f x
+def f : (((A -> B) -> A -> B) -> ((A -> B) -> A -> B)) -> ((A -> B) -> A -> B) = (fun x -> x (fun y -> fun z -> y z))
 
-def func_id : (T -> T) -> (T -> T) = fun f -> f
+def tmp : ((A -> B) -> A -> B) = f id1
 
-normalize func_id
+normalize tmp

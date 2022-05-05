@@ -7,6 +7,7 @@
  (name Mylib)
  (modules parser lexer 
           concrete_syntax syntax
-          driver domain utils nbe)
+          driver domain utils nbe
+          check)
  (libraries sexplib)
  (public_name nbe_stlc))

@@ -1,17 +1,19 @@
 open Sexplib
 module CS = Concrete_syntax
 
-exception MyError of string
+exception Error of string
 
 type t =
-  | T (* the only base type *)
   | Var of int (* de bruijn index *)
-  | Pi of { src: t; dst: t }
   | Lam of t
   | Ap of { f: t; a: t }
+and ty =
+  | Base of int
+  | Arrow of ty * ty
 
 
-val remove_names: CS.t -> string list -> t
+val remove_names_t: CS.t -> string list -> t
+val remove_names_ty: CS.ty -> string list -> ty
 
 val syntax_t_to_sexp: t -> Sexp.t
 

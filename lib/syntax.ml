@@ -2,49 +2,52 @@ open Utils
 open Sexplib
 module CS = Concrete_syntax
 
-exception MyError of string
+exception Error of string
 
 type t =
-  | T (* the only base type *)
   | Var of int (* de bruijn index *)
-  | Pi of { src: t; dst: t }
   | Lam of t
   | Ap of { f: t; a: t }
+and ty =
+  | Base of int
+  | Arrow of ty * ty
 
 
-let rec remove_names t names =
+let rec remove_names_t t names =
   match t with
-  | CS.Ident "T" -> T
-  | CS.Ident s -> 
+  | CS.TermIdent s -> 
     begin 
       match get_index names s with
-      | None -> raise @@ MyError ("name `" ^ s ^ "` unbound")
+      | None -> raise @@ Error ("name `" ^ s ^ "` unbound")
       | Some k -> Var k;
     end
-  | CS.Pi { src; dst = CS.Binding { names = ns; body } } ->
-    let src = remove_names src names in
-    let dst = remove_names body (ns @ names) in
-    Pi { src; dst }
   | CS.Lam (CS.Binding { names = ns; body }) ->
-    let term = remove_names body (ns @ names) in
+    let term = remove_names_t body (ns @ names) in
     Lam term
   | CS.Ap { f; a } ->
-    let f = remove_names f names in
-    let a = remove_names a names in
+    let f = remove_names_t f names in
+    let a = remove_names_t a names in
     Ap { f; a }
+
+let rec remove_names_ty ty bases = 
+  match ty with
+  | CS.TypeIdent s ->
+    begin
+      match get_index bases s with
+      | None -> raise @@ Error ("basetype name `" ^ s ^ "` not found")
+      | Some k -> Base k
+    end
+  | CS.Arrow (t1, t2) ->
+    let t1' = remove_names_ty t1 bases in
+    let t2' = remove_names_ty t2 bases in
+    Arrow (t1', t2')
 
 
 (* printing utilities *)
 
 let rec syntax_t_to_sexp t =
   match t with
-  | T -> Sexp.Atom "T"
   | Var i -> Sexp.(List [Atom "S.Var"; Atom (string_of_int i)])
-  | Pi { src; dst } -> Sexp.(List [
-      Atom "S.Pi";
-      syntax_t_to_sexp src;
-      syntax_t_to_sexp dst
-    ])
   | Lam t -> Sexp.(List [Atom "S.Lam"; syntax_t_to_sexp t])
   | Ap { f; a } -> Sexp.(List [
       Atom "S.Ap";
@@ -58,13 +61,7 @@ let to_concrete_syntax t =
   let new_varname k = "x" ^ (string_of_int k) in 
   let rec aux t cnt var_stack =
     match t with
-    | T -> (cnt, CS.Ident "T")
-    | Var k -> (cnt, CS.Ident (List.nth var_stack k))
-    | Pi { src; dst } -> 
-      let (cnt, src') = aux src cnt var_stack in
-      let var_name = new_varname cnt in 
-      let (cnt, body') = aux dst (cnt + 1) (var_name :: var_stack) in
-      (cnt, CS.Pi { src = src'; dst = CS.Binding { names = [var_name]; body = body' } })
+    | Var k -> (cnt, CS.TermIdent (List.nth var_stack k))
     | Lam t ->
       let var_name = new_varname cnt in 
       let (cnt, ct) = aux t (cnt + 1) (var_name :: var_stack) in

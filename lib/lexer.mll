@@ -19,6 +19,7 @@ rule read =
   | ')' { RPAR }
   | ':' { COLON }
   | "fun" { FUN }
+  | "basetype" { BASETYPE }
   | "def" { DEF }
   | "normalize" { NORMALIZE }
   | '=' { EQ }

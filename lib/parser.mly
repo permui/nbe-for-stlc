@@ -12,6 +12,7 @@ open Concrete_syntax
 %token FUN
 %token EQ
 %token DEF
+%token BASETYPE
 %token NORMALIZE
 %token EOF
 
@@ -29,42 +30,53 @@ commands:
   ;
 
 command:
-  | DEF; name = ID; COLON; a = e; EQ; b = e;
-    { Def (name, a, b) }
+  | BASETYPE; name = ID
+    { Basetype name }
+  | DEF; name = ID; COLON; ty = ty_e; EQ; tm = tm_e
+    { Def (name, ty, tm) }
   | NORMALIZE; name = ID
     { Normalize name }
   ;
 
-e:
-  | t = e1 { t }
+tm_e:
+  | t = tm_e1 { t }
   ;
 
-e1:
-  | FUN; x = ID; ARROW; b = e1
+tm_e1:
+  | FUN; x = ID; ARROW; b = tm_e1
     { Lam (Binding { names = [x]; body = b }) }
-  | c = e2
+  | c = tm_e2
     { c }
   ;
 
-e2:
-  | a = e3; ARROW; b = e2
-    { Pi { src = a; dst = Binding { names = [""]; body = b } } }
-  | LPAR; x = ID; COLON; a = e; RPAR; ARROW; b = e2
-    { Pi { src = a; dst = Binding { names = [x]; body = b } } }
-  | c = e3
-    { c }
-  ;
-
-e3:
-  | f = e3; a = e4
+tm_e2:
+  | f = tm_e2; a = tm_e3
     { Ap { f; a } }
-  | c = e4
+  | c = tm_e3
     { c }
   ;
 
-e4:
+tm_e3:
   | s = ID
-    { Ident s }
-  | LPAR; c = e; RPAR
+    { TermIdent s }
+  | LPAR; c = tm_e; RPAR
+    { c }
+  ;
+
+ty_e:
+  | ty = ty_e1 { ty }
+  ;
+
+ty_e1:
+  | a = ty_e2; ARROW; b = ty_e1
+    { Arrow (a, b) }
+  | c = ty_e2
+    { c }
+  ;
+
+ty_e2:
+  | s = ID
+    { TypeIdent s }
+  | LPAR; c = ty_e; RPAR
     { c }
   ;

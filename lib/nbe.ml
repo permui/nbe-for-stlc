@@ -3,38 +3,35 @@ module D = Domain
 
 exception NbeError of string
 
-let rec do_clos (D.Clos { term; env }) a = eval term (a :: env)
+let rec do_clos (D.Clos { term; env }) a = eval_t term (a :: env)
 
 and do_ap f a =
   match f with
   | D.Lam clos -> do_clos clos a
-  | D.Neutral { term; tp = D.Pi { src; dst } } ->
-    let tp = do_clos dst a in
-    D.Neutral { term = D.Ap { f = term; a = Pack { term = a; tp = src } }; tp = tp }
+  | D.Neutral { term; tp = D.Arrow (t1, t2) } ->
+    D.Neutral { term = D.Ap { f = term; a = Pack { term = a; tp = t1 } }; tp = t2 }
   | _ -> raise @@ NbeError ("not a function in do_ap")
 
-and eval t env = 
+and eval_t t env = 
   match t with
-  | S.T -> D.T
   | S.Var k -> List.nth env k
-  | S.Pi { src; dst } -> 
-    let src' = eval src env in 
-    D.Pi { src = src'; dst = Clos { term = dst; env = env } }
   | S.Lam t ->
     D.Lam (Clos { term = t; env = env })
-  | S.Ap { f; a } -> do_ap (eval f env) (eval a env)
+  | S.Ap { f; a } -> do_ap (eval_t f env) (eval_t a env)
+
+and eval_ty ty =
+  match ty with
+  | S.Base k -> D.Base k
+  | S.Arrow (t1, t2) -> D.Arrow (eval_ty t1, eval_ty t2)
 
 and read_back size pack = 
   match pack with
-  | D.Pack { tp = D.Pi { src; dst }; term } -> 
-    let x = D.make_var size src in 
-    let tp' = do_clos dst x in
-    let tm' = do_ap term x in
-    S.Lam (read_back (size + 1) (Pack { term = tm'; tp = tp' }))
-  | D.Pack { tp = _; term = D.Neutral { term; tp = _ } } -> read_back_ne size term
-  | D.Pack { tp = _; term = D.T } -> S.T (* actually this cannot happen *)
-  | D.Pack { tp = _; term = D.Pi { src = _; dst = _ } }  ->
-    raise @@ NbeError ("read back Pi should not happen")
+  | D.Pack { term; tp = D.Arrow (t1, t2) } -> 
+    let x = D.make_var size t1 in
+    let p = D.Pack { term = do_ap term x; tp = t2 } in 
+    S.Lam (read_back (size + 1) p)
+  | D.Pack { term = D.Neutral { term; tp = _ }; tp = D.Base _ } ->
+    read_back_ne size term
   | _ -> raise @@ NbeError ("unmatched read back should not happen")
 
 and read_back_ne size ne =

@@ -1,0 +1,11 @@
+basetype T
+
+def id : T -> T = fun x -> x
+
+def fst: T -> T -> T = fun x -> fun y -> x
+
+def snd: T -> T -> T = fun x -> fun y -> y
+
+def ap : (T -> T) -> T -> T = fun f -> fun x -> f x
+
+def func_id : (T -> T) -> (T -> T) = fun f -> f

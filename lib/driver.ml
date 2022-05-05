@@ -3,17 +3,30 @@ module CS = Concrete_syntax
 module S  = Syntax
 module D  = Domain
 
-type env = Env of { len: int; names: string list; terms: D.t list; tps: D.t list }
+exception DriverError of string
+
+type env = Env of {
+  len: int;
+  bases: string list;
+  names: string list;
+  terms: D.t list;
+  tps: D.ty list
+}
 
 (* we ignore typecheck for now *)
-let work com (Env { len; names; terms; tps }) =
+let work com (Env { len; bases; names; terms; tps }) =
   match com with
+  | CS.Basetype s ->
+    if List.mem s bases
+      then raise (DriverError ("duplicated basetype `" ^ s ^ "`"))
+      else Env { len; bases = s :: bases; names; terms; tps }
   | CS.Def (name, tp, term) ->
-    let tp = S.remove_names tp names in
-    let term = S.remove_names term names in
-    let sem_tp = Nbe.eval tp terms in
-    let sem_term = Nbe.eval term terms in
-    Env { len = len + 1; names = name :: names; terms = sem_term :: terms; tps = sem_tp :: tps }
+    let tp = S.remove_names_ty tp bases in
+    let term = S.remove_names_t term names in
+    let sem_tp = Nbe.eval_ty tp in
+    Check.check term sem_tp tps;
+    let sem_term = Nbe.eval_t term terms in
+    Env { len = len + 1; bases; names = name :: names; terms = sem_term :: terms; tps = sem_tp :: tps }
   | CS.Normalize name ->
     begin 
       match get_index names name with
@@ -26,9 +39,9 @@ let work com (Env { len; names; terms; tps }) =
         let (_, cnf) = S.to_concrete_syntax nf in 
         CS.print_t cnf
     end;
-    Env { len; names; terms; tps }
+    Env { len; bases; names; terms; tps }
 
-let empty_env = Env { len = 0; names = []; terms = []; tps = [] }
+let empty_env = Env { len = 0; bases = []; names = []; terms = []; tps = [] }
 
 let rec run_with_env coms env =
   match coms with
@@ -39,4 +52,5 @@ let rec run_with_env coms env =
 
 let run coms = 
   try run_with_env coms empty_env with
-  | S.MyError s -> Printf.printf "S.MyError: %s\n" s
+  | S.Error s -> Printf.printf "S.Error: %s\n" s
+  | DriverError s -> Printf.printf "DriverError: %s\n" s
