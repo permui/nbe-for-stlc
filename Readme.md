@@ -3,6 +3,8 @@
 This is a practice project aimed at implementing the *Normalization by Evaluation* for *Simply Typed Lambda Calculus*.
 It computes the beta-reduced-eta-long normal form of typed lambda expressions.
 
+The author studied Daniel Gratzer's [nbe-for-mltt](https://github.com/jozefg/nbe-for-mltt) before this, so the style of this project is similar to Daniel's.
+
 Terms of our language include 
 
 * Variable: `x`
